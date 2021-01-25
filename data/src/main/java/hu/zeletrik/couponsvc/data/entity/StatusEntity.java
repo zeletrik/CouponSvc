@@ -10,10 +10,10 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity
-@Table(name = "territory")
+@Table(name = "actual_status")
 @NoArgsConstructor
 @EqualsAndHashCode
-public class TerritoryEntity {
+public class StatusEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,13 +23,10 @@ public class TerritoryEntity {
     @Column(name = "country", nullable = false)
     private String country;
 
-    @Column(name = "win_after", nullable = false)
-    private Integer winAfter;
+    @Column(name = "redeemed_today", nullable = false)
+    private Integer redeemedToday;
 
-    @Column(name = "max_per_day", nullable = false)
-    private Integer maxWinPerDay;
-
-    @Column(name = "overall_max", nullable = false)
-    private Integer maxWinOverall;
+    @Column(name = "win_overall", nullable = false)
+    private Integer winOverall;
 
 }

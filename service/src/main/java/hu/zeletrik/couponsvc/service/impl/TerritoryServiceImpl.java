@@ -1,27 +1,23 @@
 package hu.zeletrik.couponsvc.service.impl;
 
-import hu.zeletrik.couponsvc.data.entity.TerritoryEntity;
 import hu.zeletrik.couponsvc.data.repository.TerritoryRepository;
 import hu.zeletrik.couponsvc.service.TerritoryService;
 import hu.zeletrik.couponsvc.service.dto.ServiceResponse;
 import hu.zeletrik.couponsvc.service.dto.TerritoryDto;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TerritoryServiceImpl implements TerritoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TerritoryServiceImpl.class);
 
     private final TerritoryRepository territoryRepository;
     private final ConversionService conversionService;
-
-    public TerritoryServiceImpl(TerritoryRepository territoryRepository, ConversionService conversionService) {
-        this.territoryRepository = territoryRepository;
-        this.conversionService = conversionService;
-    }
 
     @Override
     public ServiceResponse<TerritoryDto> findByCountry(String country) {
