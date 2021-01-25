@@ -1,4 +1,4 @@
-package hu.zeletrik.demo.couponsvc.api;
+package hu.zeletrik.couponsvc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

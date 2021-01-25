@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/coupon
+    username: docker
+    password: s3cr3t
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+  jpa:
+    database-platform: postgres
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+management:
+  endpoints:
+    web:
+      base-path: /info
+      exposure:
+        include: ['health', 'info']
+      path-mapping:
+        health: /health
+        info: /version
+info:
+  version: '@app.version@'
