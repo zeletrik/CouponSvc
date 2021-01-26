@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +27,7 @@ public class TerritoryCheckStep implements RedeemChain {
     }
 
     @Override
+    @Transactional
     public void chain(final TicketDto ticketDto) {
         final var country = ticketDto.getCountry();
         final var territoryDetails = territoryService.findByCountry(country).getBody();

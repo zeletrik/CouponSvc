@@ -1,6 +1,6 @@
 package hu.zeletrik.couponsvc.api.controller;
 
-import hu.zeletrik.couponsvc.api.request.TicketRedeemRequest;
+import hu.zeletrik.couponsvc.api.request.RedeemRequest;
 import hu.zeletrik.couponsvc.api.response.RedeemResponse;
 import hu.zeletrik.couponsvc.service.RedeemService;
 import hu.zeletrik.couponsvc.service.dto.TicketDto;
@@ -27,7 +27,7 @@ public class RedeemController {
     private final ConversionService conversionService;
 
     @PostMapping
-    public ResponseEntity<RedeemResponse> retrieveTerritoryDetails(final @Valid @RequestBody TicketRedeemRequest request) {
+    public ResponseEntity<RedeemResponse> retrieveTerritoryDetails(final @Valid @RequestBody RedeemRequest request) {
         LOGGER.info("Retrieve ticket details by number for={}", request.getNumber());
 
         final var redeemResponse = redeemService.redeem(conversionService.convert(request, TicketDto.class));
