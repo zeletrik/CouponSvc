@@ -12,6 +12,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional
 @AllArgsConstructor
@@ -40,11 +42,15 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     public ServiceResponse<StatusDto> updateStatus(StatusDto statusDto) {
-        var entity = statusRepository.save(conversionService.convert(statusDto, StatusEntity.class));
-        var dto = conversionService.convert(entity, StatusDto.class);
-        return ServiceResponse.<StatusDto>builder()
+        final var entityToSave = conversionService.convert(statusDto, StatusEntity.class);
+        return Objects.nonNull(entityToSave)
+                ? ServiceResponse.<StatusDto>builder()
                 .success(true)
-                .body(dto)
+                .body(conversionService.convert(statusRepository.save(entityToSave), StatusDto.class))
+                .build()
+                : ServiceResponse.<StatusDto>builder()
+                .success(false)
+                .body(StatusDto.builder().build())
                 .build();
     }
 }

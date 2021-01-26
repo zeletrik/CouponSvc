@@ -245,8 +245,7 @@
 							<exclude>**/resource/**</exclude>
 							<exclude>**/*Provider*</exclude>
 							<exclude>**/*Provider*</exclude>
-							<exclude>**/IncomingMessage.*</exclude>
-							<exclude>**/CustomUserDetails.*</exclude>
+							<exclude>**/error/*</exclude>
 						</excludes>
 						<skip>${skipJacoco}</skip>
 					</configuration>

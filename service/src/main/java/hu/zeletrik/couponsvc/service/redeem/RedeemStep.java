@@ -23,6 +23,10 @@ public class RedeemStep implements RedeemChain {
     @Override
     public void chain(TicketDto ticketDto) {
         LOGGER.debug("Redeeming ticket with number={}", ticketDto.getNumber());
-        ticketService.updateTicket(ticketDto);
+        final var redeemResponse = ticketService.updateTicket(ticketDto);
+
+        if (!redeemResponse.isSuccess()) {
+            throw new RuntimeException("Ticket redeem failed");
+        }
     }
 }

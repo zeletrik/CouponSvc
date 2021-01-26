@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/redeem")
@@ -27,16 +28,22 @@ public class RedeemController {
     private final ConversionService conversionService;
 
     @PostMapping
-    public ResponseEntity<RedeemResponse> retrieveTerritoryDetails(final @Valid @RequestBody RedeemRequest request) {
+    public ResponseEntity<RedeemResponse> redeemTicket(final @Valid @RequestBody RedeemRequest request) {
         LOGGER.info("Retrieve ticket details by number for={}", request.getNumber());
+        final var converted = conversionService.convert(request, TicketDto.class);
+        if (Objects.isNull(converted)) {
+            throw new RuntimeException("Could not convert request");
+        }
 
-        final var redeemResponse = redeemService.redeem(conversionService.convert(request, TicketDto.class));
-
+        final var redeemResponse = redeemService.redeem(converted);
         if (!redeemResponse.isSuccess()) {
-            throw new RuntimeException("Ticket retrieve failed!");
+            throw new RuntimeException("Ticket redeem failed!");
         }
 
         final var body = conversionService.convert(redeemResponse.getBody(), RedeemResponse.class);
+        if (Objects.isNull(body)) {
+            throw new RuntimeException("Could not convert data");
+        }
         return ResponseEntity.ok(body);
     }
 }

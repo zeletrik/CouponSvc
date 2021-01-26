@@ -35,7 +35,7 @@ public class TerritoryCheckStep implements RedeemChain {
         final var winnersToday = winnersToday(territoryStatus.getRedeemedToday(), territoryDetails.getWinAfter());
         final var isTicketWinner = isWinner(territoryStatus.getRedeemedToday(), territoryDetails.getWinAfter())
                 && isTodayAvailable(winnersToday, territoryDetails.getMaxWinPerDay())
-                && isOverallAvailable(winnersToday, territoryStatus.getWinOverall(), territoryDetails.getMaxWinOverall());
+                && isOverallAvailable(territoryStatus.getWinOverall(), territoryDetails.getMaxWinOverall());
         if (isTicketWinner) {
             LOGGER.debug("Winner ticket!, number={}", ticketDto.getNumber());
             ticketService.setTicketWinner(ticketDto.getNumber());
@@ -52,8 +52,8 @@ public class TerritoryCheckStep implements RedeemChain {
         return winnersToday < maxWinPerDay;
     }
 
-    private boolean isOverallAvailable(final int winnersToday, final int overallWinnersCount, final int overallWinnerLimit) {
-        return winnersToday + overallWinnersCount < overallWinnerLimit;
+    private boolean isOverallAvailable(final int overallWinnersCount, final int overallWinnerLimit) {
+        return overallWinnersCount < overallWinnerLimit;
     }
 
     private boolean isWinner(final int redeemedToday, final int winAfter) {

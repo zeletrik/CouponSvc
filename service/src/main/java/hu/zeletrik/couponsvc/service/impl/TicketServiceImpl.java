@@ -15,6 +15,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +30,7 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public ServiceResponse<TicketDto> findTicketByNumber(String ticketNumber) {
+        LOGGER.debug("Find ticket by number={}", ticketNumber);
         return ticketRepository.findByNumber(ticketNumber.toUpperCase())
                 .map(entity -> conversionService.convert(entity, TicketDto.class))
                 .map(dto -> ServiceResponse.<TicketDto>builder()
@@ -43,34 +45,37 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public List<TicketDto> findWinners(final WinnersPageWrapper winnersPageWrapper) {
-        var pager = PageRequest.of(winnersPageWrapper.getPageNumber(), winnersPageWrapper.getPageSize());
-        var country = winnersPageWrapper.getCountry();
-        var startDate = winnersPageWrapper.getStartDate();
-        var endDate = winnersPageWrapper.getEndDate();
+        final var pager = PageRequest.of(winnersPageWrapper.getPageNumber(), winnersPageWrapper.getPageSize());
+        final var country = winnersPageWrapper.getCountry();
+        final var startDate = winnersPageWrapper.getStartDate();
+        final var endDate = winnersPageWrapper.getEndDate();
+        LOGGER.debug("Find winners for country={}, between {} and {}", country, startDate, endDate);
 
-        var winners = pageableTicketRepository.findByWinnerTrueAndCountryAndTimestampBetween(
+        return pageableTicketRepository.findByWinnerTrueAndCountryAndTimestampBetween(
                 country, startDate, endDate, pager
         )
                 .stream()
                 .map(entity -> conversionService.convert(entity, TicketDto.class))
                 .collect(Collectors.toList());
-
-        return winners;
     }
 
     @Override
-    public ServiceResponse<TicketDto> updateTicket(TicketDto ticketDto) {
-        var entity = ticketRepository.save(conversionService.convert(ticketDto, TicketEntity.class));
-        var dto = conversionService.convert(entity, TicketDto.class);
-        return ServiceResponse.<TicketDto>builder()
+    public ServiceResponse<TicketDto> updateTicket(final TicketDto ticketDto) {
+        final var entityToSave = conversionService.convert(ticketDto, TicketEntity.class);
+        return Objects.nonNull(entityToSave)
+                ? ServiceResponse.<TicketDto>builder()
                 .success(true)
-                .body(dto)
+                .body(conversionService.convert(ticketRepository.save(entityToSave), TicketDto.class))
+                .build()
+                : ServiceResponse.<TicketDto>builder()
+                .success(false)
+                .body(TicketDto.builder().build())
                 .build();
     }
 
     @Override
-    public ServiceResponse<TicketDto> setTicketWinner(String ticketNumber) {
-        var entity = ticketRepository.findByNumber(ticketNumber.toUpperCase());
+    public ServiceResponse<TicketDto> setTicketWinner(final String ticketNumber) {
+        final var entity = ticketRepository.findByNumber(ticketNumber.toUpperCase());
         return entity.map(it -> {
             it.setWinner(true);
             return it;
