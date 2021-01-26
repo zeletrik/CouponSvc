@@ -27,7 +27,6 @@ public class TerritoryCheckStep implements RedeemChain {
 
     @Override
     public void chain(final TicketDto ticketDto) {
-        LOGGER.info("Determine if ticket wins");
         final var country = ticketDto.getCountry();
         final var territoryDetails = territoryService.findByCountry(country).getBody();
         final var territoryStatus = statusService.findByCountry(country).getBody();
@@ -36,7 +35,7 @@ public class TerritoryCheckStep implements RedeemChain {
                 && isTodayAvailable(winnersToday, territoryDetails.getMaxWinPerDay())
                 && isOverallAvailable(winnersToday, territoryStatus.getWinOverall(), territoryDetails.getMaxWinOverall());
         if (isTicketWinner) {
-            LOGGER.info("Winner ticket!");
+            LOGGER.debug("Winner ticket!, number={}", ticketDto.getNumber());
             ticketService.setTicketWinner(ticketDto.getNumber());
         }
         final var updatedStatus = increaseTodayRedeemed(territoryStatus, isTicketWinner);

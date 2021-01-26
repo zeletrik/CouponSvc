@@ -22,7 +22,7 @@ public class RedeemStep implements RedeemChain {
 
     @Override
     public void chain(TicketDto ticketDto) {
-        LOGGER.info("Redeeming ticket with number={}", ticketDto.getNumber());
+        LOGGER.debug("Redeeming ticket with number={}", ticketDto.getNumber());
         ticketService.updateTicket(ticketDto);
     }
 }
