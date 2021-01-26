@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * Handle low level validation of the ticket
+ */
 @Service
 @AllArgsConstructor
 public class ValidatorStep implements RedeemChain {
@@ -24,10 +27,14 @@ public class ValidatorStep implements RedeemChain {
         return 1;
     }
 
+    /**
+     * Check if the country exist as territory and if the ticket is already redeemed
+     * @param ticketDto the processable ticket
+     */
     @Override
     public void chain(TicketDto ticketDto) {
-        var isTerritoryExist = territoryService.findByCountry(ticketDto.getCountry()).isSuccess();
-        var isExist = ticketService.findTicketByNumber(ticketDto.getNumber()).isSuccess();
+        final var isTerritoryExist = territoryService.findByCountry(ticketDto.getCountry()).isSuccess();
+        final var isExist = ticketService.findTicketByNumber(ticketDto.getNumber()).isSuccess();
         LOGGER.info("Ticket with number={}, isExist={}, for country={}", ticketDto.getNumber(), isExist, ticketDto.getCountry());
         if (isExist) {
             throw new TicketAlreadyExistException(String.format("Ticket with number %s already redeemed", ticketDto.getNumber()));

@@ -21,6 +21,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller to handle analytics related requests
+ */
 @RestController
 @RequestMapping("/analytics")
 @AllArgsConstructor
@@ -31,10 +34,20 @@ public class AnalyticsController {
     private final TicketService ticketService;
     private final ConversionService conversionService;
 
+    /**
+     * Retrieves a list of winners based on the arguments
+     *
+     * @param country    the country to check
+     * @param startDate  the start date to check winners
+     * @param endDate    the end date to check winners
+     * @param pageNumber the number of the page
+     * @param pageSize   the size of the page
+     * @return a list of {@link AnalyticsResponse}
+     */
     @GetMapping("/{country}")
     public ResponseEntity<List<AnalyticsResponse>> pagedWinnersByCountry(final @PathVariable String country,
-                                                                         final @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                                                                         final @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                                                         final @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                                                         final @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
                                                                          final @RequestParam int pageNumber,
                                                                          final @RequestParam int pageSize) {
         LOGGER.info("Retrieve winners for country={}, between {} and {}", country, startDate, endDate);

@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.Objects;
 
+/***
+ * Controller to handle ticket redeem related requests
+ */
 @RestController
 @RequestMapping("/redeem")
 @AllArgsConstructor
@@ -27,6 +30,12 @@ public class RedeemController {
     private final RedeemService redeemService;
     private final ConversionService conversionService;
 
+    /**
+     * Entry point for the redeem workflow
+     *
+     * @param request contains the ticket and user data
+     * @return a {@link RedeemResponse}
+     */
     @PostMapping
     public ResponseEntity<RedeemResponse> redeemTicket(final @Valid @RequestBody RedeemRequest request) {
         LOGGER.info("Retrieve ticket details by number for={}", request.getNumber());

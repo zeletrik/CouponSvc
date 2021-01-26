@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Check if the ticket wins based on the territory constraints
+ */
 @Service
 @AllArgsConstructor
 public class TerritoryCheckStep implements RedeemChain {
@@ -44,32 +47,67 @@ public class TerritoryCheckStep implements RedeemChain {
         statusService.updateStatus(updatedStatus);
     }
 
+    /**
+     * Calculates if the ticket is a winner ticket for today
+     *
+     * @param redeemedToday the number of the currently redeemed tickets
+     * @param winAfter      the count of the wins
+     * @return true if winner
+     */
     private int winnersToday(final int redeemedToday, final int winAfter) {
         return (int) Math.floor((double) redeemedToday / winAfter);
     }
 
+    /**
+     * Calculates if today is available day for winning
+     *
+     * @param winnersToday the current winner count for today
+     * @param maxWinPerDay the constraint of the daily winners
+     * @return true if today is still valid
+     */
     private boolean isTodayAvailable(final int winnersToday, final int maxWinPerDay) {
         return winnersToday < maxWinPerDay;
     }
 
+    /**
+     * Calculates if the limit is reached for the overall winners
+     *
+     * @param overallWinnersCount the count of the overall winners
+     * @param overallWinnerLimit  the limit of the overall winners
+     * @return true if the limit is not yet reached
+     */
     private boolean isOverallAvailable(final int overallWinnersCount, final int overallWinnerLimit) {
         return overallWinnersCount < overallWinnerLimit;
     }
 
+    /**
+     * Calculates if the ticket is a winner
+     *
+     * @param redeemedToday the count of the currently redeemed tickets for today
+     * @param winAfter      the count where the ticket wins
+     * @return true if the ticket is a winner
+     */
     private boolean isWinner(final int redeemedToday, final int winAfter) {
         return (redeemedToday + 1) % winAfter == 0;
     }
 
-    private StatusDto increaseTodayRedeemed(final StatusDto actual, final boolean isWinner) {
+    /**
+     * Increase redeemed status
+     *
+     * @param current  the current status
+     * @param isWinner true if the ticket won
+     * @return the modified status
+     */
+    private StatusDto increaseTodayRedeemed(final StatusDto current, final boolean isWinner) {
         return StatusDto.builder()
-                .id(actual.getId())
+                .id(current.getId())
                 .winOverall(
                         isWinner
-                                ? actual.getWinOverall() + 1
-                                : actual.getWinOverall()
+                                ? current.getWinOverall() + 1
+                                : current.getWinOverall()
                 )
-                .redeemedToday(actual.getRedeemedToday() + 1)
-                .country(actual.getCountry())
+                .redeemedToday(current.getRedeemedToday() + 1)
+                .country(current.getCountry())
                 .build();
     }
 }
