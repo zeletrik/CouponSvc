@@ -46,6 +46,12 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.NOT_ACCEPTABLE);
     }
 
+    @ExceptionHandler(value = Exception.class)
+    protected ResponseEntity<Object> pokemonHandler(Exception ex) {
+        final var body = createErrorBody(ex.getMessage());
+        return new ResponseEntity<>(body, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     private Map<String, Object> createErrorBody(String... message) {
         final Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", Instant.now());
